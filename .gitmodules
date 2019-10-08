@@ -1,3 +1,6 @@
 [submodule "src/kluginn"]
 	path = src/kluginn
 	url = git@github.com:tincanbox/kluginn.git
+[submodule "kplugin-template"]
+	path = kplugin-template
+	url = git@github.com:tincanbox/kplugin-template.git

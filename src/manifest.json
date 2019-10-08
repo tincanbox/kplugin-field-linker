@@ -2,44 +2,65 @@
   "manifest_version": 1,
   "version": 1,
   "type": "APP",
+  "icon": "asset/image/icon.png",
+  "name": {
+    "en": "kPlugin_TEMPLATE",
+    "ja": "kPlugin_TEMPLATE"
+  },
+  "description": {
+    "en": "This is a template of kPlugin.",
+    "ja": "This is a template of kPlugin."
+  },
+
+  "config": {
+    "html": "asset/view/config.html",
+    "js": [
+      "https://js.cybozu.com/jquery/3.3.1/jquery.min.js",
+      "https://apis.google.com/js/api.js",
+      "script/lib/GAPI_adaptor.js",
+      "vendor/kluginn/dist/kluginn.js",
+      "script/hook/config.js"
+    ],
+    "css": [
+      "asset/css/51-modern-default.css",
+      "asset/css/config.css"
+    ],
+    "required_params": [
+    ]
+  },
+
+
   "desktop": {
     "js": [
       "https://js.cybozu.com/jquery/3.3.1/jquery.min.js",
-      "js/desktop.js"
+      "https://apis.google.com/js/api.js",
+      "script/lib/GAPI_adaptor.js",
+      "vendor/kluginn/dist/kluginn.js",
+      "script/hook/desktop.js"
     ],
     "css": [
-      "css/51-modern-default.css",
-      "css/desktop.css"
+      "asset/css/51-modern-default.css",
+      "asset/css/desktop.css"
     ]
   },
-  "icon": "image/icon.png",
-  "config": {
-    "html": "html/config.html",
-    "js": [
-      "https://js.cybozu.com/jquery/3.3.1/jquery.min.js",
-      "js/config.js"
-    ],
-    "css": [
-      "css/51-modern-default.css",
-      "css/config.css"
-    ],
-    "required_params": [
-      "message"
-    ]
-  },
-  "name": {
-    "en": "kplugin-field-linker"
-  },
-  "description": {
-    "en": "kplugin-field-linker"
-  },
+
   "mobile": {
     "js": [
       "https://js.cybozu.com/jquery/3.3.1/jquery.min.js",
-      "js/mobile.js"
+      "https://apis.google.com/js/api.js",
+      "vendor/sweetalert2/sweetalert2.all.min.js",
+      "vendor/underscore/underscore-min.js",
+      "script/lib/GAPI_adaptor.js",
+      "vendor/Kluginn/Config.js",
+      "vendor/Kluginn/API.js",
+      "vendor/Kluginn/UI.js",
+      "vendor/Kluginn/Core.js",
+      "script/hook/mobile.js"
     ],
     "css": [
-      "css/mobile.css"
+      "asset/css/51-modern-default.css",
+      "asset/css/mobile.css"
     ]
   }
+
 }
