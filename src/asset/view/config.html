@@ -1,5 +1,124 @@
-<section class="settings">
-  <h2 class="settings-heading">Settings for Template App !!</h2>
-  <form class="js-submit-settings">
-  </form>
+<section class="settings container">
+  <section class="row">
+    <div class="col">
+
+      <h2 class="settings-heading">kPugin Field Linker <i class="fa fa-question-circle" data-action="show_help"></i></h2>
+      <div>
+        <button class="btn btn-success btn-action" data-action="add_row">フィールド追加</button>
+        <button class="btn btn-primary btn-action" data-action="submit">保存</button>
+      </div>
+
+      <section id="_yield_"></section>
+
+      <hr />
+
+      <div class="text-center">
+        <button class="btn btn-primary btn-lg btn-action" data-action="submit">保存</button>
+      </div>
+
+    </div>
+  </section>
 </section>
+
+<script type="text/template" id="template:form">
+<div>
+  <form class="kplugin-config-form">
+  <table class="table table-responsive entry-table">
+    <thead>
+      <tr>
+        <th class=""><span class="title">クエリフィールド</span></th>
+        <th class=""><span class="title">同期アプリ</span></th>
+        <th class=""><span class="title">対象フィールド</span></th>
+        <th class=""><span class="title">プレビュー</span></th>
+        <th class=""><span class="title"> </span></th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  </form>
+</div>
+</script>
+
+<script type="text/template" id="template:row">
+<tr class="entry-row">
+
+  <% len = $('.entry-row').length %>
+  <% fnm = "rel_entry[" + len + "]" %>
+
+  <td class="entry-cell column-field">
+    <select class="custom-select entry-data-field" name="<%= fnm %>[field]">
+      <!-- cybozu.data.page.FORM_DATA.schema.table.fieldList -->
+      <option selected disabled>Choose one...</option>
+      <% for(var a in info.fields){ var r = info.fields[a] %>
+        <option value="<%= r.code %>" <%= row && row.field == r.code ? "selected" : "" %>><%= r.code %></option>
+      <% } %>
+    </select>
+  </td><!-- cell -->
+
+  <td class="entry-cell column-app_id">
+    <select class="custom-select entry-data-app_id" name="<%= fnm %>[app_id]">
+      <option selected disabled>Choose one...</option>
+      <% for(var a of info.apps){ %>
+        <option
+          value="<%= a.appId %>"
+          <%= row && row.app_id == a.appId ? "selected" : "" %>><%= a.name %></option>
+      <% } %>
+    </select>
+  </td>
+
+  <td class="entry-cell column-target_field">
+    <select class="custom-select entry-data-target_field" name="<%= fnm %>[target_field]">
+      <option selected disabled>&laquo;- Select app_id first.</option>
+    </select>
+  </td>
+
+  <td class="entry-cell column-preview">
+    <textarea
+      class="form-control"
+      name="<%= fnm %>[preview]"
+      ><%- row ? row['preview'] : "" %><%= !row ? '<%= record["レコード番号"].value %&gt;' : '' %></textarea>
+  </td>
+
+  <td class="entry-cell">
+    <button
+      class="action-delete btn btn-danger"
+      title=""><i class="fa fa-trash-alt"></i></button>
+  </td>
+
+</tr>
+</script>
+
+<script type="text/template" id="template:row-select-target-field">
+<option disabled selected>Choose one...</option>
+<% for(var k in fields){ var r = fields[k] %>
+  <option value="<%= r.code %>" <%= (row && row.target_field && row.target_field == r.code) ? 'selected': '' %>
+    ><%= r.code %></option>
+<% } %>
+</script>
+
+<script type="text/template" id="template:help-content">
+<p>フィールドを別アプリのフィールドの値と連携し、指定したフォーマットで表示します。</p>
+<p class="text-muted small text-left">
+『クエリフィールド』の値と『同期アプリ』の『対象フィールド』が等しい１レコードを取得し、プレビューで指定したフォーマットで表示します。リンクが見つかったフィールドには自動でアンカーが貼られ、クリックで該当するレコードの詳細ページに移動します。
+</p>
+<p class="text-muted small text-left">
+プレビューでは、underscorejs の _.template が使用されています。
+使用可能な変数は以下のとおりです。
+</p>
+<hr />
+<section class="text-left">
+  <dl>
+    <dt>record</dt>
+    <dd><code>record.<strong class="text-important">フィールドコード</strong>.value</code> でマッチしたレコードのデータにアクセスできます。
+    <div>例</div>
+    <pre>&lt;%= record.UserName.value + "様" %&gt;</pre>
+    </dd>
+  </dl>
+</section>
+<hr />
+<section class="text-left">
+  <div>参考</div>
+  <a href="https://underscorejs.org/#template" target="_blank">underscore#template</a>
+</section>
+
+</script>

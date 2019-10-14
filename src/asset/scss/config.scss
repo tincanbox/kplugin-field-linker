@@ -1,0 +1,51 @@
+.settings-heading {
+  padding: 1em 0;
+}
+
+.kintoneplugin-input-text {
+  width: 20em;
+}
+
+.btn-action {
+  min-width: 80px;
+}
+
+/* Entry Table */
+
+.entry-table {
+  display: table; margin: 2em 0 2em; width: 100%;
+
+  .entry-row {
+    display: table-row;
+
+    .entry-cell {
+      display: table-cell;
+      text-align: center;
+      vertical-align: middle;
+    }
+  }
+
+}
+
+.entry-cell {
+  &.column-field {
+    width: 16%;
+  }
+  &.column-app_id {
+    width: 24%;
+  }
+  &.column-target_field {
+    width: 24%;
+  }
+  &.column-preview {
+    width: 33%;
+    textarea {
+      min-height: 80px;
+      display: block;
+      width: 100%;
+      min-width: 180px;
+    }
+  }
+}
+
+
