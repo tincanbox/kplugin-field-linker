@@ -43,9 +43,15 @@ import '../../asset/scss/config.scss';
         });
 
         v = FM.ob.unserialize(v);
-        console.log(v);
         v.rel_entry = v.rel_entry.filter(function(r){
-          return r && r.field && r.app_id && r.target_field;
+          return r && r.app_id && r.target_field;
+        });
+
+        v.rel_entry = v.rel_entry.map(function(r){
+          if(r.field_addition){
+            r.field_addition = "" + r.field_addition;
+          }
+          return r;
         });
 
         var jn = JSON.stringify(v);
@@ -101,8 +107,6 @@ import '../../asset/scss/config.scss';
       info: S,
       row: row || null
     }));
-
-    t.find('.entry-data-app_id').attr("disabled", true);
 
     t.on('click', '.action-delete', function(){
       t.remove();

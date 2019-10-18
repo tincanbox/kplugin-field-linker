@@ -1,8 +1,12 @@
+<div class="BSTRP">
 <section class="settings container">
   <section class="row">
     <div class="col">
 
-      <h2 class="settings-heading">kPugin Field Linker <i class="fa fa-question-circle" data-action="show_help"></i></h2>
+      <h2 class="settings-heading">
+        kPugin Field Linker
+        <i class="fa fa-question-circle" data-action="show_help"></i>
+      </h2>
       <div>
         <button class="btn btn-success btn-action" data-action="add_row">フィールド追加</button>
         <button class="btn btn-primary btn-action" data-action="submit">保存</button>
@@ -19,6 +23,7 @@
     </div>
   </section>
 </section>
+</div>
 
 <script type="text/template" id="template:form">
 <div>
@@ -50,9 +55,14 @@
       <!-- cybozu.data.page.FORM_DATA.schema.table.fieldList -->
       <option selected disabled>Choose one...</option>
       <% for(var a in info.fields){ var r = info.fields[a] %>
-        <option value="<%= r.code %>" <%= row && row.field == r.code ? "selected" : "" %>><%= r.code %></option>
+        <option value="<%= r.code %>" <%= ( row && row.field == r.code ) ? "selected" : "" %>><%= r.code %></option>
       <% } %>
     </select>
+    <input
+      class="form-control entry-data-field_addition"
+      name="<%= fnm %>[field_addition]"
+      type="text"
+      value="<%= ( row && row.field_addition ) ? row.field_addition : "" %>">
   </td><!-- cell -->
 
   <td class="entry-cell column-app_id">
@@ -76,7 +86,7 @@
     <textarea
       class="form-control"
       name="<%= fnm %>[preview]"
-      ><%- row ? row['preview'] : "" %><%= !row ? '<%= record["レコード番号"].value %&gt;' : '' %></textarea>
+      ><%- row ? row['preview'] : "" %><%= !row ? '<%= "Record: " + record.$id.value %&gt;' : '' %></textarea>
   </td>
 
   <td class="entry-cell">
@@ -100,6 +110,9 @@
 <p>フィールドを別アプリのフィールドの値と連携し、指定したフォーマットで表示します。</p>
 <p class="text-muted small text-left">
 『クエリフィールド』の値と『同期アプリ』の『対象フィールド』が等しい１レコードを取得し、プレビューで指定したフォーマットで表示します。リンクが見つかったフィールドには自動でアンカーが貼られ、クリックで該当するレコードの詳細ページに移動します。
+</p>
+<p class="text-muted small text-left">
+『クエリフィールド』の下のインプットでは、カンマ区切りでフィールドIDを指定します。関連テーブルなど、強制的に .value- 要素に対して検索をさせたい場合に使用してください。
 </p>
 <p class="text-muted small text-left">
 プレビューでは、underscorejs の _.template が使用されています。

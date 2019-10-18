@@ -20,6 +20,7 @@ import '../../asset/scss/desktop.scss';
     p: {
       attr_rec_id: "data-fl-rec-id",
       attr_src_field: "data-fl-src-field",
+      attr_tapp_id: "data-fl-target-app",
     }
   };
 
@@ -31,30 +32,33 @@ import '../../asset/scss/desktop.scss';
 
   K.$k.events.on('app.record.index.show', function(){
     inited.then(function(){
-      K.debug.log("index.show");
-      update_asset();
-      update_all_data_cell();
+      if(update_asset()){
+        update_all_data_cell();
+      }
     })
   });
 
   K.$k.events.on('app.record.detail.show', function(){
     inited.then(function(){
-      update_asset();
-      update_all_data_cell();
+      if(update_asset()){
+        update_all_data_cell();
+      }
     })
   });
 
   K.$k.events.on('app.record.index.edit.submit.success', function(e){
     K.debug.log("submit", e);
     setTimeout(function(){
-      update_asset();
-      for(var k in e.record){
-        for(var rr of S.data.rel_entry){
-          if(rr.field == k){
-            var mm = find_all_field_by_config(rr);
-            build_data_cell(mm);
+      if(update_asset()){
+        for(var k in e.record){
+          for(var rr of S.data.rel_entry){
+            if(rr.field == k){
+              var mm = find_all_field_by_config(rr);
+              build_data_cell(mm);
+            }
           }
         }
+
       }
     }, 0);
   });
@@ -65,8 +69,13 @@ import '../../asset/scss/desktop.scss';
 
   function update_asset(){
     S.conf = K.config.fetch();
+    if(!S.conf.data_json){
+      return false;
+    }
+
     S.data = JSON.parse(S.conf.data_json);
     S.form = cybozu.data.page.FORM_DATA.schema.table.fieldList;
+
 
     S.data.rel_entry.map(function(r){
       r.fid = false;
@@ -79,6 +88,8 @@ import '../../asset/scss/desktop.scss';
       return r;
     });
     update_all_data_cell_attr();
+
+    return true;
   }
 
 
@@ -92,19 +103,20 @@ import '../../asset/scss/desktop.scss';
   function apply_attr($el, f){
     assign_class($el, 'target-field');
     $el.attr(S.p.attr_src_field, f.field);
+    $el.attr(S.p.attr_tapp_id, f.app_id);
   }
 
   function bind_event(){
     $(document).on('click', '.kp-fl-linked', function(){
       var el = $(this);
-      var matched_config;
-      var el_fld = el.attr(S.p.attr_src_field);
-      for(var a of S.data.rel_entry){
-        if(a.field == el_fld){
-          var rid = el.attr(S.p.attr_rec_id);
-          rid && rid.length && window.open("/k/" + a.app_id + "/show#record=" + rid, "fl-win-" + a.app_id);
-          break;
-        }
+      var rid = el.attr(S.p.attr_rec_id);
+      var a = find_config_by_element(el);
+      if(a){
+        ( rid && rid.length )
+          && window.open(
+            "/k/" + a.app_id + "/show#record=" + rid,
+            "fl-win-" + a.app_id
+          );
       }
     });
 
@@ -122,9 +134,8 @@ import '../../asset/scss/desktop.scss';
     var td = find_field_cell();
     td.each(function(){
       var $el = $(this);
-      var fid = find_fid_from_element($el);
-      var cnf = find_config_by_fid(fid);
-      if(fid && cnf){
+      var mm = find_config_by_element($el);
+      if(mm){
         build_data_cell($el);
       }
     });
@@ -136,15 +147,43 @@ import '../../asset/scss/desktop.scss';
     K.debug.log("update_all_data_cell_attr", "target_cell", td.length);
     td.each(function(){
       var $el = $(this);
-      var fid = find_fid_from_element($el);
-      var cnf = find_config_by_fid(fid);
-      if(fid && cnf){
-        apply_attr($el, find_config_by_fid(fid));
-      }else{
-        //console.error("invalid cell", fid);
-        //
+      var mm = find_config_by_element($el);
+      if(mm){
+        apply_attr($el, mm);
       }
     });
+  }
+
+  function find_config_by_element($el){
+    var nmcls = $el.attr("class").split(" ").filter(function(v){
+      return v.match(/^value\-[0-9]+$/);
+    });
+
+    if(!nmcls.length){
+      return false;
+    }
+
+    var nm = nmcls.map(function(v){
+      return v.replace("value-", "");
+    }).shift();
+
+    var f = find_config_by_fid(nm);
+    if(f){
+      return f;
+    }
+
+    for(var rr of S.data.rel_entry){
+      if(rr.field_addition){
+        var l = rr.field_addition.toString().split(",").map(function(v){
+          return v.trim();
+        });
+        if(l.indexOf(nm) > -1){
+          return rr;
+        }
+      }
+    }
+
+    return false;
   }
 
   function find_field_cell(wrp){
@@ -187,8 +226,7 @@ import '../../asset/scss/desktop.scss';
         return;
       }
 
-      var fid = find_fid_from_element(td);
-      var f = find_config_by_fid(fid);
+      var f = find_config_by_element(td);
       var vw = td.find("span").first();
       var vl = vw.text().trim();
 
