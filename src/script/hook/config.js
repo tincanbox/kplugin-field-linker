@@ -93,7 +93,8 @@ import '../../asset/scss/config.scss';
     K.config.update_form();
 
     var c = K.config.fetch();
-    var list = JSON.parse(c.data_json || []);
+    var j = c.data_json;
+    var list = j ? JSON.parse(j) : {rel_entry: []};
 
     V.entry_table.empty();
 
